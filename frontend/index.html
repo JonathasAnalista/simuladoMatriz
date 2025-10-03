@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulados Detran</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=70.70.75" />
+  <link rel="stylesheet" href="./assets/css/style.css?v=70.70.75" />
   <!-- Fonte moderna para tipografia consistente -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -128,67 +128,18 @@
   <span id="mensagem-alerta-login"></span>
 </div>
 
-<!-- Firebase (CDN) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <!-- Legmaster config e init do Firebase -->
-<script src="./js/config.js"></script>
-<script src="./js/firebase.js" defer></script>
+<script src="./js/config.js" defer></script>
+<script type="module" src="./js/firebase.js"></script>
 
-<script>
-  (function(){
-    var host = window.location.hostname;
-    var map = {
-      'localhost': 'http://localhost:4000',
-      '127.0.0.1': 'http://127.0.0.1:4000'
-    };
-    window.__LEGMASTER_API_BASE__ = map[host] || 'https://api.seudominio.com.br';
-  })();
-</script>
 <script src="./assets/js/api.js" defer></script>
 <!-- Simulado script -->
-<script src="./assets/js/script.js?v=70.70.75" defer></script> <!-- script.js do simulado -->
+<script type="module" src="./assets/js/script.js?v=70.70.75"></script> <!-- script.js do simulado -->
 
 
 
 
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js').then(reg => {
-    console.log("✅ Service Worker registrado");
-
-    // Quando uma nova versão for detectada
-    reg.onupdatefound = () => {
-      const newSW = reg.installing;
-      newSW.onstatechange = () => {
-        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-          console.log("⚠️ Nova versão detectada. Atualizando...");
-
-          // Envia mensagem para ativar imediatamente
-          newSW.postMessage({ type: 'SKIP_WAITING' });
-        }
-      };
-    };
-
-    // Quando o novo SW for ativado, recarrega a página uma única vez
-    let refreshed = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshed) return;
-      refreshed = true;
-      console.log("🔁 Recarregando com nova versão...");
-      window.location.reload();
-    });
-    // Verificação periódica por atualizações do SW (30min), somente quando visível
-    const CHECK_MS = 30 * 60 * 1000;
-    const safeUpdate = async () => { try { if (navigator.onLine) await reg.update(); } catch {} };
-    setInterval(() => { if (document.visibilityState === 'visible') safeUpdate(); }, CHECK_MS);
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') safeUpdate(); });
-    window.addEventListener('focus', safeUpdate);
-  });
-}
-</script>
 
 
 <script>
@@ -245,7 +196,7 @@ if ('serviceWorker' in navigator) {
     c.innerHTML = `
       <div class="pwa-card" role="dialog" aria-label="Instalar aplicativo">
         <div class="pwa-row">
-          <div class="pwa-icon"><img src="/icons/logo_nova.png" alt=""></div>
+          <div class="pwa-icon"><img src="./icons/logo_nova.png" alt=""></div>
           <div class="pwa-body">
             <h3 class="pwa-title">Instalar o app Simulados Detran</h3>
             <p class="pwa-sub">Acesso rápido, melhor experiência dos simulados.</p>
@@ -273,7 +224,7 @@ if ('serviceWorker' in navigator) {
     c.innerHTML = `
       <div class="pwa-card" role="dialog" aria-label="Adicionar à Tela de Início">
         <div class="pwa-row">
-          <div class="pwa-icon"><img src="/icons/icon-192.png" alt=""></div>
+          <div class="pwa-icon"><img src="./icons/icon-192.png" alt=""></div>
           <div class="pwa-body">
             <h3 class="pwa-title">Adicionar o app à Tela de Início</h3>
             <p class="pwa-sub">No Safari, toque em Compartilhar e depois em "Adicionar à Tela de Início".</p>

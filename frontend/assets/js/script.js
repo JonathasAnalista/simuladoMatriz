@@ -1,3 +1,5 @@
+import { auth, db as firebaseDb, firebase as firebaseCompat, setPersistence, browserLocalPersistence, markPersistenceConfigured } from '../js/firebase.js';
+
 // ===============================================================
 // ===============================================================
 // LEGMASTER • script.js
@@ -22,27 +24,35 @@ try {
 
 /**
  * FIREBASE (centralizado via window.LEGMASTER_CONFIG.FIREBASE_CONFIG)
- * - Evita duplicação de config e reuso da inicialização feita em js/firebase.js
+ * - Evita duplicacao de config e reuso da inicializacao feita em js/firebase.js
  */
 const firebaseConfig = (window.LEGMASTER_CONFIG && window.LEGMASTER_CONFIG.FIREBASE_CONFIG) || null;
-// Versão para bust de cache de assets estáticos (ex.: ícones)
+// Versao para bust de cache de assets estaticos (ex.: icones)
 const ASSET_VERSION = (typeof VERSAO_ATUAL !== 'undefined' ? VERSAO_ATUAL : '1');
 const RESET_SENDER_HINT = firebaseConfig && firebaseConfig.authDomain
   ? `no-reply@${firebaseConfig.authDomain}`
   : 'no-reply@legmaster.app';
 
-if (!window.firebaseAppInitialized && typeof firebase !== 'undefined' && firebaseConfig) {
-  try { firebase.initializeApp(firebaseConfig); window.firebaseAppInitialized = true; } catch {}
+const firebase = firebaseCompat;
+let db = firebaseDb;
+
+try {
+  if (auth) {
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => markPersistenceConfigured())
+      .catch(() => {});
+  }
+} catch (err) {
+  console.warn('[script.js] Falha ao configurar persistencia do auth:', err);
 }
-const auth = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth() : null;
-let db;
-try { if (typeof firebase !== 'undefined' && firebase.firestore) db = firebase.firestore(); } catch {}
-try { auth && auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{}); } catch {}
+
+window.fb = window.fb || {};
+window.fb.auth = auth;
+window.fb.db = db;
 
 // Integração opcional com o back-end Node (ver assets/js/api.js).
 // Mantemos a autenticação Firebase existente, mas expomos hooks comentados
 // para ligar o fluxo JWT quando o servidor estiver ativo.
-const apiClient = window.LegmasterApi || null;
 
 // Enter no login
 document.addEventListener("keydown", (e) => {
@@ -67,7 +77,7 @@ const buildCfcSlug = (nome, cidade) =>
 const emailDocId       = (email) => normalizeEmail(email).replace(/[.@]/g, "_");
 const emailDocIdLegacy = (email) => String(email).replace(/[.@]/g, "_");
 
-async function ensureDb() { if (db) return db; if (firebase?.firestore) db = firebase.firestore(); return db; }
+async function ensureDb() { if (!db) db = firebaseDb; return db; }
 function getUserEmail() {
   try {
     const e = (window.currentUser && window.currentUser.email)
@@ -880,9 +890,10 @@ function renderMenuPrincipal() {
   localStorage.setItem("telaAtual", "menu");
 
   // Exemplo de uso: carregar configurações do CFC ao entrar no menu principal.
-  if (apiClient && typeof apiClient.getStoredToken === 'function' && apiClient.getStoredToken()) {
+  const api = getApiClient();
+  if (api && typeof api.getStoredToken === 'function' && api.getStoredToken()) {
     // Nota: chamada em background, sem alterar fluxo atual.
-    apiClient.getConfigCfc().then((config) => {
+    api.getConfigCfc().then((config) => {
       console.log('[api] config CFC', config);
     }).catch((err) => console.warn('[api] config falhou', err));
   }
@@ -2193,7 +2204,7 @@ document.addEventListener("DOMContentLoaded", () => {
  * SERVICE WORKER
  *************************************************/
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js").then(reg => {
+  navigator.serviceWorker.register('./service-worker.js').then(reg => {
     console.log("✅ Service Worker registrado:", reg);
     reg.onupdatefound = () => {
       const installingWorker = reg.installing;
@@ -2210,10 +2221,10 @@ if ("serviceWorker" in navigator) {
 
 function getAuthSafe() {
   try {
-    if (typeof firebase === "undefined") return null;
-    if (typeof firebase.auth === "function") return firebase.auth();
-    return firebase.auth ? firebase.auth() : null;
-  } catch { return null; }
+    return auth || window.firebaseAuth || null;
+  } catch {
+    return null;
+  }
 }
 
 // Busca por termo único com tolerância (consulta por prefixo em slugs + filtro no cliente)
