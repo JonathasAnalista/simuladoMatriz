@@ -1,152 +1,77 @@
-﻿# Simulado Agente â€“ Estrutura Profissional
-# antes de fazer o deploy  rodar esse comando para copiar o arquivo do novo cfc na frontend # e backend principal pra depois fazer o deploy --> node scripts/apply-config.js cfc-nome
-Este repositÃ³rio mantÃ©m o frontend estÃ¡tico da plataforma (`frontend/`) e a API Node.js que integra com Firebase e Mercado Pago (`backend/`). ConteÃºdos antigos (Android/TWA/scripts manuais) estÃ£o arquivados em `legacy/`.
+# ProjetoMatrizSimulados
 
+ProjetoMatrizSimulados centraliza o portal de simulados online e a API que integra pagamentos, controle de acesso e configuracoes multi cliente. O objetivo e viabilizar uma unica base de codigo para autoescolas, reduzindo manutencao e padronizando deploys.
+
+## Visao geral
+- Frontend estatico (HTML, CSS e JavaScript) com suporte PWA e experiencias de simulados.
+- Backend Node.js (Express + Firebase Admin + Mercado Pago) para autenticar usuarios, processar pagamentos e sincronizar beneficios PRO.
+- Suporte a multiplos clientes e autoescolas via resolucao dinamica de configuracoes.
+- Artefatos legados preservados em `legacy/` para consultas e migracoes controladas.
+
+## Estrutura do repositorio
 ```
-simuladosdetranoficial_2/
-|-- frontend/           # Site: HTML, CSS, JS, PWA, simulados
-|-- backend/            # API Express + Firebase Admin (cron de limpeza incluso)
-|   `-- src/            # App Express modularizado (config, jobs, rotas Mercado Pago)
-`-- legacy/             # Materiais antigos (APK, gradle, scripts, backend TS)
-    `-- server-ts/      # Backend TypeScript arquivado
+ProjetoMatrizSimulados/
+|-- frontend/     # Aplicacao web estatica: site, assets, PWA e simulados
+|-- backend/      # API Express modular (config, rotas Mercado Pago, jobs)
+|-- configs/      # Modelos e automacoes para multi cliente
+|-- scripts/      # Scripts utilitarios (ex.: apply-config)
+`-- legacy/       # Codigo e artefatos antigos (Android, backend TS, etc.)
 ```
 
----
+## Requisitos principais
+- Node.js 18 ou superior (backend e scripts).
+- Conta Firebase (Authentication + Firestore) por cliente.
+- Conta Mercado Pago com credenciais de integracao.
+- Servidor HTTP estatico opcional para rodar `frontend/` localmente.
 
-## Frontend (`frontend/`)
+## Como rodar
 
-- `index.html` â€“ shell principal (carrega tema, scripts, integraÃ§Ãµes)..
-- `assets/css/style.css` â€“ estilos globais do app.
-- `assets/js/script.js` â€“ lÃ³gica principal (auth, provas, UI)..
-- `assets/js/api.js` â€“ cliente para a API (`window.LegmasterApi`).
-- `js/config.js` â€“ configuraÃ§Ã£o Firebase (usa `window.LEGMASTER_CONFIG`).
-- `js/firebase.js` â€“ inicializaÃ§Ã£o segura do Firebase no cliente.
-- `js/gate.js` â€“ guard que controla acesso FREE/PRO dos simulados..
-- `service-worker.js`, `manifest.json`, `icons/` â€“ PWA e Ã­cones.
-- `pagamento/{sucesso,pendente,erro}/` â€“ retornos do checkout Mercado Pago.
-- `simulados/` â€“ pastas dos simulados com seus `index.html`, `script.js`, `style.css` e assets.
-- `manifest-checksum.txt` â€“ hash usado na publicaÃ§Ã£o para invalidar caches.
+**Frontend**
+- Site e estatico: abra `frontend/index.html` direto no navegador ou sirva com seu servidor HTTP preferido (http-server, serve, nginx e similares).
+- Ajuste `frontend/js/config.js` com `firebaseConfig` e `apiBase` corretos antes de publicar.
 
-### Executar localmente
+**Backend**
+```bash
+cd backend
+cp .env.example .env    # preencha com credenciais reais
+npm install
+npm start               # inicia em modo producao
+npm run start:dev       # opcional: usa nodemon
+```
+O servidor escuta na porta definida em `PORT` (padrao 3333) e agenda o cron de limpeza de acessos (`scheduleAccessCleanup`).
 
-Ã‰ um site estÃ¡tico: abra `frontend/index.html` ou sirva com seu static server preferido.
+## Configuracao multi cliente
 
-### Ajustes rÃ¡pidos
+Fluxo recomendado (deploy unico para varias autoescolas):
+1. Edite `frontend/js/config.js` e adicione cada dominio em `STATIC_CLIENTS`, informando `firebaseConfig` e `apiBase`.
+2. Copie `backend/config/tenants.config.example.json` para `backend/config/tenants.config.json` e registre os tenants com as chaves exigidas.
+3. Defina `TENANTS_CONFIG_PATH=backend/config/tenants.config.json` (ou use `TENANTS_CONFIG_JSON`).
+4. Certifique-se de que o frontend envie o header `X-Leg-Client` (isso ja ocorre por padrao) ou injete `window.LEGMASTER_CLIENTS` quando precisar configurar via script.
+5. Integre sistemas externos com o mesmo identificador para que o backend resolva o tenant corretamente.
 
-- Atualize `frontend/js/config.js` com as chaves do novo projeto Firebase.
-- Ajuste `window.__LEGMASTER_API_BASE__` em `frontend/index.html` para apontar para a API hospedada.
-- Para alteraÃ§Ãµes visuais, edite `assets/css/style.css` (agora centralizado).
+Fluxo legado (um cliente por build): execute `node scripts/apply-config.js nome-do-cliente` para copiar arquivos de `configs/template` para `frontend/` e `backend/`. Esse caminho continua disponivel para clientes isolados.
 
----
+## Deploy
+- Frontend: publique a pasta `frontend/` em provedores estaticos (Netlify, Vercel, Cloudflare Pages, S3 + CloudFront, etc.). Atualize `manifest-checksum.txt` quando precisar invalidar caches.
+- Backend: deploy em Render, Railway, Fly.io, Cloud Run ou infraestrutura equivalente. Replique as variaveis do `.env` e garanta Node >= 18.
+- Firebase: habilite Authentication (Email/Senha) e configure regras do Firestore aceitando usuarios autenticados. Inclua indices se o painel solicitar.
 
-## Backend (`backend/`)
+## Scripts uteis
+- `node scripts/apply-config.js <cliente>`: aplica configuracoes legadas de um cliente especifico.
+- `npm start` / `npm run start:dev` (backend): inicia a API com ou sem hot reload.
+- Limpeza diaria automatica: `backend/src/jobs/cleanupOldAccesses.js` remove acessos antigos todos os dias as 03h00.
 
-API Express (Node 18+) usada para Mercado Pago e para aplicar benefÃ­cios PRO no Firestore. O cÃ³digo foi modularizado em `src/` (config, rotas Mercado Pago, jobs de limpeza).
+## Checklist rapido de QA
+- [ ] Login e cadastro Firebase funcionando.
+- [ ] Vencimentos registram em `desempenhos` no Firestore.
+- [ ] Webhooks do Mercado Pago liberam o acesso PRO esperado.
+- [ ] Paginas `pagamento/sucesso`, `pagamento/pendente` e `pagamento/erro` exibem layout correto.
+- [ ] Service Worker instala e atualiza sem erros no console.
+- [ ] Multi cliente responde com os tenants certos (teste com cada dominio/header).
 
-### Setup
-
-1. `cd backend`
-2. Copie `.env.example` para `.env` e preencha com os valores reais.
-3. `npm install`
-4. `npm start`
-
-### Cron automÃ¡tico
-
-O job `backend/src/jobs/cleanupOldAccesses.js` usa `node-cron` para executar `cleanupOldAccesses()` todo dia Ã s 03:00 e manter apenas os acessos dos Ãºltimos dois dias. O agendamento Ã© iniciado em `backend/src/server.js`.
-
-### Endpoints principais
-
-- `POST /api/mp/create-preference`
-- `POST /api/mp/pix/create`
-- `GET  /api/mp/payment/:id`
-- `POST /api/mp/webhook`
-- Health check: `GET /` e `GET /debug/env`
-
-### Deploy
-
-- Render, Railway, Fly.io, Cloud Run, etc.
-- Configure as mesmas variÃ¡veis de ambiente do `.env`.
-- Certifique-se de rodar com Node >= 18.
-
-## Backend TypeScript legado (`legacy/server-ts/`)
-
-Projeto mais antigo (TS) com mÃºltiplos controllers/services. Mantido arquivado em `legacy/server-ts/`. Antes de usar novamente:
-
-1. `cd legacy/server-ts`
-2. `npm install`
-3. Configure `.env` com as variÃ¡veis esperadas.
-4. `npm run dev` ou `npm run build && npm run start`
-
-Essa pasta estÃ¡ fora do fluxo atual (fica em `legacy/`) e sÃ³ deve ser usada para consultas ou migraÃ§Ãµes.
-
+## Recursos legados
+Tudo que nao faz parte do fluxo atual permanece em `legacy/` (APK Android, backend TypeScript, scripts auxiliares). Consulte apenas para migracoes historicas e evite commitar alteracoes dessa pasta.
 
 ---
 
-## Legacy (`legacy/`)
-
-- APK assinada antiga, projeto Android (`app/`, `gradle*`, `build/`).
-- `server-ts/` (backend TypeScript arquivado) e demais scripts auxiliares.
-- `chave-legmaster.json`, `limparAcessos.js`, `twa-manifest.json`, `apply_changes.ps1`, etc.
-
-Esses arquivos ficam guardados, mas nÃ£o fazem parte do fluxo atual. `legacy/` estÃ¡ no `.gitignore` para evitar commits acidentais.
-
-
----
-
-## Multi-cliente (autoescolas)
-
-- `frontend/js/config.js` agora escolhe o Firebase pelo hostname. Adicione cada domínio em `STATIC_CLIENTS` (ou injete via `window.LEGMASTER_CLIENTS`) com o `FIREBASE_CONFIG` e `API_BASE` corretos.
-- Para o backend, descreva cada autoescola em um JSON (ex.: `backend/config/tenants.config.json`) e informe `TENANTS_CONFIG_PATH` ou `TENANTS_CONFIG_JSON`. O arquivo exemplo `backend/config/tenants.config.example.json` mostra o formato esperado.
-- O frontend já envia o cabeçalho `X-Leg-Client` automaticamente nas chamadas. Integrações externas devem incluir esse identificador para que o backend selecione o tenant certo.
-- Se preferir o fluxo antigo (build separado por cliente), o script `node scripts/apply-config.js nome-do-cliente` continua disponível.
-
-Veja `configs/README.md` para o passo a passo detalhado.
-
----
-
-## Fluxo de trabalho recomendado
-
-1. **Frontend**
-   - Ajuste configs (`config.js`, `index.html`).
-   - Gere build estÃ¡tico (Netlify/Vercel aceita a pasta `frontend/`).
-2. **Backend**
-   - Configure `.env`.
-   - Execute `npm start` localmente ou faÃ§a deploy.
-3. **Firebase**
-   - Console â†’ Authentication: habilitar Email/Senha, adicionar domÃ­nios.
-   - Console â†’ Firestore: publicar regras permitindo gravaÃ§Ã£o (auth != null) e adicionar Ã­ndices se necessÃ¡rio.
-4. **MigraÃ§Ãµes**
-   - Se precisar migrar dados de outro projeto, exporte/import em Firestore.
-
----
-
-## Boas prÃ¡ticas em vigor
-
-- Uso defensivo do Firebase client (verifica `window.LEGMASTER_CONFIG`).
-- Guards no `gtag` para evitar exceÃ§Ãµes.
-- Service Worker simples que nÃ£o atrapalha atualizaÃ§Ãµes.
-- CrÃ©ditos e toasts acessÃ­veis (`aria-*`).
-- LÃ³gica de simulados agrupada em `assets/js/script.js` (ainda que extensa, centralizada).
-
----
-
-## Ideias futuras (sem quebrar o existente)
-
-- Migrar simulados para dados (JSON) para reduzir duplicaÃ§Ã£o.
-- Adotar bundler (Vite/Parcel) para modularizar JS/CSS.
-- Simplificar fluxo de deploy com scripts (`npm run deploy:frontend`, etc.).
-- Melhorar regras do Firestore para granularidade por coleÃ§Ã£o.
-
----
-
-## Checklist rÃ¡pido de QA
-
-- [ ] Login/cadastro Firebase funcionando.
-- [ ] Salvamento de simulado aparece no Firestore (`desempenhos`).
-- [ ] Webhook Mercado Pago ativa plano PRO corretamente.
-- [ ] PÃ¡ginas de retorno do pagamento respondem com o layout esperado.
-- [ ] Service Worker registra sem erros no console.
-
----
-
-Qualquer ajuste adicional (scripts de build, automaÃ§Ãµes CI/CD, limpeza de simulados) Ã© sÃ³ solicitar.
+Precisa de outros ajustes ou automatizacoes? Abra uma issue ou solicite melhorias complementares.
