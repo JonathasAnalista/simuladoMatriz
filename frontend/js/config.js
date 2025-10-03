@@ -34,7 +34,7 @@
     //   id: "simulados-oficial",
     //   label: "Simulados Detran Oficial",
     //   apiBase: "",
-    //   firebaseConfig: DEFAULT_FIREBASE_CONFIG
+    ///   firebaseConfig: DEFAULT_FIREBASE_CONFIG
     // },
     // "projetomatrizsimulados.netlify.app": {
     //   id: "matriz-producao",
