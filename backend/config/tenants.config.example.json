@@ -1,0 +1,40 @@
+﻿{
+  "tenants": [
+    
+    {
+      "id": "simulado-agente",
+      "label": "cfc agente",
+      "hosts": [
+        "simulados-agente.netlify.app"
+      ],
+      "frontendUrl": "simulados-agente.netlify.app",
+      "baseUrl": "https://api.outrodominio.com.br",
+      "mpAccessToken": "TOKEN_MERCADO_PAGO_OUTRO_CFC",
+      "firebase": {
+        "projectId": "simuladosagente",
+        "clientEmail": "firebase-adminsdk-fbsvc@simuladosagente.iam.gserviceaccount.com",
+        "privateKey": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD264SQgBtlRGos\nO3Wm3K8Aw+Mk5tFGEumXRaapbrmEWgHUyjou+INdFhwRDvDfICBvJ7++A8e2nZYh\ntnaKZ9xX9W+lrbKbJ8tLfWgCHNi+HX2WSdRZ3FKZ+dlSBljd2RSoDLaLmnjZAkxs\n2wOfogoTDHGsPoazzFiORV6ZLWgEdbj4N5ziOA4MC2rAQ4byD7tUfxVp7Ad/hUqM\npS2EwuC9Vn/0rGRCEaMnE0n4DLMAbioe65yzgDoglf1nL5DJ8m56ee4vQNVnsSi1\nfA6rAZY86Xb4shLeJq42gIzki0LVa8MkiuU9E8WeynSo70CBsvEUnlHEBlRyhpTy\ncBySnFYBAgMBAAECggEAFESd04yocwYMHwhcbm9z8ACkTv2hVPqtcOzXMtYzZTFM\nMC7PWtasVcJAWIgc7nvBHc6p9wtxY8SIs8i57z96P0AWw4c//2tjTRWEqZO7mNNr\n4R+7Tgr/PsNa+tgpiEBO6UJt44SxAcMmCdNqdzqCUDD3zbcuMGkIJdl82971yFPG\nLiAS2kJZ7+ZKjE+vkb3ne6EYDjh4NPS3D/xykCOChj/vq8NPXqd0Cph8UQklSPw3\npGyOOuqjyBC3xMOfWGDk/TKGIz9JLPE9v4Tmat/cHZ9AhsQUWvqqP7VD6XaxujZM\n0ruPeRf2vNWvT7b7HF/QUebpj3L4hXmwhBp0X6197wKBgQD74fAZYmqaS1LpcQ6o\n4knaBvkj5zvc28Gyl6NH4puqcOvYA1xaLHwSQ07HN+GZ6UQDUehMFhEzUnUwa+nx\nDRY6RTCZNjh5LIA741mIUyj07hLEq3uvKBCRwFdCGU8b2BO4BMXSmbH6+W/r3m++\nG1G+EDBO+ykQWad5odnq6r2gtwKBgQD69NAXrDFIVy7uNbZD2x43dZzM+MDBI/hR\n/jcZHp3FHymJGJj2N874v5NbQGVs+2WbVle6kjWH4Mhdvsrvzfr/7aRaGXGa3rtB\nKIYhLoC2LRriFESvFoXKHdA5sumT8mvQiqh8g6rlFzY3usGeFEs6aC/i7lakCYnC\nBpCafGeXBwKBgH5IC1Eet2V96CajiP8A3JfTsSrf7nJPNvBr9++9W9/61zMolC+d\nZ+LcHe3hRVkdyvyDHxyuX5dEev54zAQPVJqIP9JAjdWqiuv7ktK3JqyNg5lYhB0P\n0CbSsKyx9ah3D4PN2MQ6TDIQxp0RmyJLnhLVGPMwFqlc2YswqwmNAN9HAoGBALmA\n1YFqK1PJ/krfMUefZQqhybJJ/lHGgPw66geLdhwMGOvaXtdCEaAWHJrLUy3n9weI\nH3kuMpuqMPH64o+4tt0PkPl47V0JX2mexucoNMR1OvX6/XpfL65js1OzSK2v+LpC\nhKDlwyFsswsm5ZAweBtIgH1CqJDA7C+cIq/PXdNpAoGAc6qUHXp5k1/FAXak6QNT\nFOYAAy1pABMNWLCErz33y6gjf0yI9Sri8FsZt36CnMyDUS9lkU9baZyPYo79duIC\nRbeDYSHs+T3d92ChtVqbEDWWdbg0EPjYmB9HFMXimrGQ047MUKlTxW7DY0TUgRGW\nW18C8urL1/tV0Uns8cFIhQA=\n-----END PRIVATE KEY-----\n"
+      }
+    },
+    {
+      "id": "simulado-transitar",
+      "label": "cfc transitar",
+      "isDefault": false,
+      "hosts": [
+        "www.simuladostransitar.com.br",
+        "simuladostransitar.com.br"
+      ],
+      "frontendUrl": "https://www.simuladostransitar.com.br",
+      "baseUrl": "https://api.simuladostransitar.com.br",
+      "mpAccessToken": "SEU_TOKEN_MERCADO_PAGO",
+      "firebase": {
+        "projectId": "simuladostransitar",
+        "clientEmail": "firebase-adminsdk-fbsvc@simuladostransitar.iam.gserviceaccount.com",
+        "privateKey": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+l/s55xPDFX/X\ndl98JB2/p7xs7i6fnqhgFgkPFm8YnRwqZwjk5dzOQF7kI46m55AgdStU3SYDxB8W\nTNsraaUTMa1daBGiD0Zh7FHacO0vjOMwTtVeLTQvIk32GKZHgVtlbV4XzP54ycVn\nwhzicLJ8L9NcHNPKj+LIA8ctYFAiDcbCCHCt0WXFwwQJpiZl1LZTrwYHaM63Xlkv\nCe7Tu9K8z/SReSfb9OgMQm23hqlFtO4EjrTMYBKy4dI0OLQfrZVaOTP9sXqZmMLC\nTHthWESXARDu9F8l2gs43zSe60q/NhzAKSHQyTzTUTKEDQSznjqILAjBVmQR4n6r\nYwIwlxnVAgMBAAECggEAEieC4BSRLtNk7n6RgM8l4EQXcB7N5RllO2XN7hh6c5M/\nhBB1aew1OJYsE7oJU/+ZnGXcv0QjY1dyiJrAg6WX+jiQpWWMzG19DEXI1DBOf2mB\nmG/h5gsTPewcFfVqHUSGkqY0wLqfgJzjh0sXmkAW2Dpr/Qmn6NMEzH2DouBaMawI\n49Do84Q/VVpQqsfZR5kEatZibM/FH44X1u6Vx92EqXZj9IsaZNx7daPaIDzxVtEI\nIN+yoHAfQaDXDf93AWq/3cOsuatjCmPFBtE3hj2jo0d4h9vSaAGefaTOcJHzFdMX\njaAXuIege/AR0P4N6KzVlsf1aRrgr0wRlvBV7LKLwQKBgQD4eHiJITdMA3K1gSVS\nT7X3lyuvJop1su+7aw48nFLUgnT6SaLU+M4qrTtG25C0j/l5ah3h7R0IWzPavnWc\nAlgc0VmAamjL1Tjd2ItZuIszYrhhxiDF7aQZGTXQXzp/RfwbRDe3WtIhpSIoFom0\nDWNDoB24u+94i3OJhM68i8iYdQKBgQDEXoaqnNAdq9rlhnO+egwgUuGmWKDBKtlO\nWaY+p47dLOG3f/S21AYlDteXOIQHdgJc16Iy473/oPrE9rw5mnvIRskq1iUT/Kri\nCfUI/nurPPkyFp/gAi4Xt+Vs9+NVEZbLTVSAG9AQmO2z4BPV5jxZE+nOeGvJybLa\nXxKLhalP4QKBgCvYroScbPKoBR0MfjaJRHY9ogLVjUd53R44pRmDCIbhwpzMU8S7\nZz5WtYgqhN2oLoEDfeR5gE8SMRNf2sc+Dqh/NQkZPgcCSHe1l9msXDwkJp9yZCQp\nbHTVYw6zT1JYWkXBgweDKmOvjVh/qasxVZwAbF5GI9sk2K2i1wykqjBlAoGBAKeL\nc2EszNEUKX9+uVDCt4f4z3jr07UdBy43hYWd12JVAf1cGoLH4rpJsJ7g5J2tDZUD\nkuvSrvDl/DCDyNNpQMX/x3JaJmaoRXD5R+21m/Td4EzhSuWJVqR8Di9sTbXufPfX\ncgqgMGWI5f98Z9AwUjs6p1m4G1efVY/GYH9UusJhAoGBAIMzmOhog7EhXTUWl23e\nakVvkTYCD3rKV4U6wAl4fZhiyWTRmGhYgaNKgI2br/2XzIyN1hLxaMywI49WyYUt\noay9Kp2ibIst5kvCtS3ggEExaMH/Sr5QKmNqgXXzpuDkz2IBL/j3uqLTYhIF5Lt3\nRW0kfG5y1qAU48wsWcpu3sj/\n-----END PRIVATE KEY-----\n"
+      },
+      "allowedOrigins": [
+        "https://www.simuladostransitar.com.br"
+      ]
+    }
+  ]
+}
