@@ -10,7 +10,7 @@
 
   const STATIC_CLIENTS = [
     // {
-    //   id: 'cfc-alianca',
+    //   id: 'cfc-aliannnca',
     //   label: 'CFC Aliança',
     //   isDefault: false,
     //   hosts: [
